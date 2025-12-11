@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { get, set, del } from 'idb-keyval';
 import type { CanvasData, LayerData, StickerLibrary, TemplateData, ToolType } from '../types';
 
 interface AppStore {
@@ -19,6 +20,8 @@ interface AppStore {
   isRightSidebarOpen: boolean;
   // 左侧边栏是否打开
   isLeftSidebarOpen: boolean;
+  // 画布缩放
+  zoomLevel: number;
 
   // 画布操作
   createCanvas: (width: number, height: number, name?: string) => void;
@@ -37,7 +40,10 @@ interface AppStore {
   createStickerLibrary: (name: string) => void;
   importStickerLibrary: (library: StickerLibrary) => void;
   exportStickerLibrary: (libraryId: string) => void;
+  deleteStickerLibrary: (libraryId: string) => void;
+  updateStickerLibrary: (libraryId: string, updates: Partial<StickerLibrary>) => void;
   addStickerToLibrary: (libraryId: string, sticker: LayerData) => void;
+  updateStickerInLibrary: (libraryId: string, stickerId: string, updates: Partial<StickerContent>) => void;
   removeStickerFromLibrary: (libraryId: string, stickerId: string) => void;
 
   // 模板操作
@@ -51,6 +57,11 @@ interface AppStore {
   setLeftSidebarTab: (tab: 'stickers' | 'templates') => void;
   toggleRightSidebar: () => void;
   toggleLeftSidebar: () => void;
+  // 缩放操作
+  zoomIn: () => void;
+  zoomOut: () => void;
+  resetZoom: () => void;
+  setZoomLevel: (level: number) => void;
 }
 
 const useAppStore = create<AppStore>()(
@@ -64,6 +75,7 @@ const useAppStore = create<AppStore>()(
       leftSidebarTab: 'stickers',
       isRightSidebarOpen: true,
       isLeftSidebarOpen: true,
+      zoomLevel: 1,
 
       // 画布操作
       createCanvas: (width, height, name = '未命名画布') => {
@@ -82,10 +94,8 @@ const useAppStore = create<AppStore>()(
         set({ canvasData: newCanvas });
       },
 
-      openCanvas: () => {
-        // 在实际应用中，可能需要从存储或其他地方加载画布数据
-        // 这里简化处理
-        set({});
+      openCanvas: (canvasData: CanvasData) => {
+        set({ canvasData });
       },
 
       saveCanvas: (canvasData) => {
@@ -232,6 +242,20 @@ const useAppStore = create<AppStore>()(
         linkElement.click();
       },
 
+      deleteStickerLibrary: (libraryId) => {
+        set((state) => ({
+          stickerLibraries: state.stickerLibraries.filter((lib) => lib.id !== libraryId),
+        }));
+      },
+
+      updateStickerLibrary: (libraryId, updates) => {
+        set((state) => ({
+          stickerLibraries: state.stickerLibraries.map((lib) =>
+            lib.id === libraryId ? { ...lib, ...updates, updatedAt: new Date().toISOString() } : lib
+          ),
+        }));
+      },
+
       addStickerToLibrary: (libraryId, sticker) => {
         set((state) => {
           const updatedLibraries = state.stickerLibraries.map((lib) => {
@@ -239,6 +263,25 @@ const useAppStore = create<AppStore>()(
               return {
                 ...lib,
                 stickers: [...lib.stickers, sticker as any], // 暂时使用类型断言
+                updatedAt: new Date().toISOString(),
+              };
+            }
+            return lib;
+          });
+
+          return { stickerLibraries: updatedLibraries };
+        });
+      },
+
+      updateStickerInLibrary: (libraryId, stickerId, updates) => {
+        set((state) => {
+          const updatedLibraries = state.stickerLibraries.map((lib) => {
+            if (lib.id === libraryId) {
+              return {
+                ...lib,
+                stickers: lib.stickers.map((sticker) =>
+                  sticker.id === stickerId ? { ...sticker, ...updates } : sticker
+                ),
                 updatedAt: new Date().toISOString(),
               };
             }
@@ -328,10 +371,43 @@ const useAppStore = create<AppStore>()(
           isLeftSidebarOpen: !state.isLeftSidebarOpen,
         }));
       },
-    }),
+
+      // 缩放操作
+      zoomIn: () => {
+        set((state) => ({
+          zoomLevel: Math.min(state.zoomLevel + 0.1, 3), // 最大放大到3倍
+        }));
+      },
+      zoomOut: () => {
+        set((state) => ({
+          zoomLevel: Math.max(state.zoomLevel - 0.1, 0.1), // 最小缩小到0.1倍
+        }));
+      },
+      resetZoom: () => {
+        set((state) => ({
+          zoomLevel: 1,
+        }));
+      },
+      setZoomLevel: (level) => {
+        set((state) => ({
+          zoomLevel: Math.max(Math.min(level, 3), 0.1),
+        }));
+      },
+    }  ),
     {
       name: 'sticker-generator-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => ({
+        getItem: async (name) => {
+          const value = await get(name);
+          return value || null;
+        },
+        setItem: async (name, value) => {
+          await set(name, value);
+        },
+        removeItem: async (name) => {
+          await del(name);
+        },
+      })),
       version: 1,
     }
   )

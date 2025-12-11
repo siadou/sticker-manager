@@ -1,73 +1,237 @@
-# React + TypeScript + Vite
+# 贴纸生成器 (Sticker Generator)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个功能强大的在线贴纸设计和生成工具，支持画布编辑、贴纸库管理、智能抠图、模板应用等功能。
 
-Currently, two official plugins are available:
+## ✨ 主要功能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🎨 画布编辑
+- **多图层管理**：支持贴纸和文字图层的叠加编辑
+- **元素操作**：拖拽、缩放、旋转、调整透明度
+- **尺寸控制**：支持锁定/解锁长宽比，精确控制元素大小
+- **画布设置**：自定义画布尺寸、背景色，支持多种预设尺寸（A4、A5、标准分辨率等）
+- **缩放查看**：支持画布缩放，方便查看和编辑细节
 
-## React Compiler
+### 📚 贴纸库管理
+- **贴纸库创建**：创建多个贴纸库，分类管理贴纸
+- **贴纸编辑**：支持重命名贴纸、添加自定义字段（如英文名称等）
+- **批量操作**：导入/导出贴纸库，方便备份和分享
+- **预览功能**：在贴纸库中预览贴纸内容
+- **自定义字段**：为贴纸库定义自定义字段，灵活扩展贴纸属性
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### ✂️ 智能抠图工具
+- **背景移除**：基于容差的智能背景色移除功能
+- **矩形选区**：支持鼠标拖拽创建矩形选区
+- **选区操作**：将选区内容保存为贴纸、删除选区内容
+- **画布操作**：支持平移（Shift+左键/中键）和缩放（鼠标滚轮）
+- **自动优化**：保存时自动裁剪透明边缘，压缩图片以节省存储空间
 
-## Expanding the ESLint configuration
+### 📝 文字编辑
+- **多行文本**：支持换行显示，完美展示多行内容
+- **字体选择**：支持多种字体，包括内置的阿里妈妈方圆体
+- **样式控制**：字体大小、粗细（100-900）、颜色、对齐方式、行高
+- **双击编辑**：双击文字图层即可快速编辑内容
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 📋 模板系统
+- **内置模板**：内置 A4 5x5 网格模板，自动排列贴纸
+- **自定义模板**：创建、保存、导入/导出自定义模板
+- **智能生成**：选择贴纸库后，自动生成包含贴纸和名称的排版
+- **多行显示**：模板中的文字支持显示贴纸名称和所有自定义字段（每行一个）
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 💾 数据管理
+- **本地存储**：使用 IndexedDB 存储，支持大容量数据
+- **导入导出**：支持画布、贴纸库、模板的导入导出
+- **自动保存**：数据自动持久化，刷新页面不丢失
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🛠️ 技术栈
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **前端框架**：React 19 + TypeScript
+- **构建工具**：Vite
+- **状态管理**：Zustand (with IndexedDB persistence)
+- **UI 组件库**：Ant Design 5
+- **样式方案**：Tailwind CSS 4
+- **图标库**：@ant-design/icons
+- **工具库**：
+  - `lodash-es` - 工具函数
+  - `idb-keyval` - IndexedDB 操作
+  - `file-saver` - 文件保存
+
+## 📦 安装和运行
+
+### 环境要求
+- Node.js >= 18
+- pnpm (推荐) 或 npm
+
+### 安装依赖
+
+```bash
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 开发模式
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm dev
 ```
+
+访问 http://localhost:5173
+
+### 构建生产版本
+
+```bash
+pnpm build
+```
+
+### 预览生产构建
+
+```bash
+pnpm preview
+```
+
+## 📖 使用指南
+
+### 创建新画布
+
+1. 点击工具栏的"新建画布"按钮
+2. 选择预设尺寸或自定义尺寸
+3. 输入画布名称（可选）
+4. 点击确定创建
+
+### 添加贴纸
+
+1. 在左侧边栏选择"贴纸库"标签
+2. 展开贴纸库，找到需要的贴纸
+3. 直接拖拽贴纸到画布上
+4. 在右侧属性面板调整位置、大小、旋转等属性
+
+### 添加文字
+
+1. 点击工具栏的"添加文字"按钮
+2. 双击文字图层进入编辑模式
+3. 输入文字内容（支持换行）
+4. 在属性面板调整字体、大小、颜色、对齐方式等
+
+### 使用抠图工具
+
+1. 点击工具栏的"抠图工具"按钮
+2. 上传图片（或点击空白画布上传）
+3. 点击"移除背景"按钮，选择背景色并设置容差
+4. 切换到"建立选区"模式，拖拽创建矩形选区
+5. 点击"添加到贴纸"保存选区内容到贴纸库
+
+### 应用模板
+
+1. 在左侧边栏选择"模板"标签
+2. 找到需要的模板（如"A4排版 (5x5网格)"）
+3. 点击"应用到画布"
+4. 如果是内置模板，选择要使用的贴纸库
+5. 系统自动生成排版好的画布
+
+### 编辑贴纸库
+
+1. 在左侧边栏的贴纸库列表中，点击贴纸库的"编辑"按钮
+2. 可以修改贴纸库名称
+3. 添加/编辑自定义字段定义
+4. 编辑单个贴纸的名称和自定义字段值
+5. 删除不需要的贴纸
+
+### 导出图片
+
+1. 完成画布编辑后，点击工具栏的"导出图片"按钮
+2. 选择导出格式（PNG/JPEG）
+3. 图片会自动下载到本地
+
+## 📁 项目结构
+
+```
+src/
+├── assets/              # 静态资源
+│   └── fonts/          # 字体文件
+├── components/          # React 组件
+│   ├── layers/         # 图层组件（可调整大小）
+│   │   ├── ResizableLayer.tsx
+│   │   ├── StickerLayer.tsx
+│   │   └── TextLayer.tsx
+│   ├── CanvasContainer.tsx    # 画布容器
+│   ├── CanvasToolbar.tsx      # 工具栏
+│   ├── ImageEditorPage.tsx    # 抠图工具页面
+│   ├── LayerCanvas.tsx        # 图层画布
+│   ├── LayerPanel.tsx         # 图层面板
+│   ├── ElementPropertyPanel.tsx  # 元素属性面板
+│   ├── LeftSidebar.tsx        # 左侧边栏
+│   ├── RightSidebar.tsx       # 右侧边栏
+│   ├── StickerLibraryManager.tsx      # 贴纸库管理
+│   ├── StickerLibraryEditorModal.tsx  # 贴纸库编辑弹窗
+│   └── TemplateManager.tsx    # 模板管理
+├── constants/          # 常量定义
+│   └── builtInTemplates.ts   # 内置模板
+├── store/              # 状态管理
+│   └── useAppStore.ts  # Zustand store
+├── types/              # TypeScript 类型定义
+│   └── index.ts
+├── App.tsx             # 主应用组件
+├── main.tsx            # 入口文件
+└── index.css           # 全局样式
+```
+
+## 🎯 核心特性说明
+
+### 图层系统
+- 支持贴纸和文字两种图层类型
+- 每个图层可独立设置位置、大小、旋转、透明度
+- 支持图层顺序调整（z-index）
+- 支持图层显示/隐藏
+
+### 存储优化
+- 使用 IndexedDB 替代 localStorage，突破存储限制
+- 图片自动压缩（最大 800px，PNG/JPEG 自动选择）
+- 保存贴纸时自动裁剪透明边缘
+
+### 交互优化
+- 支持鼠标滚轮缩放
+- 支持拖拽操作（元素移动、贴纸添加）
+- 双击文字快速编辑
+- 点击画布空白处取消选择
+
+### 字体支持
+- 内置阿里妈妈方圆体字体
+- 支持系统字体（Arial、微软雅黑、黑体、宋体等）
+- 字体粗细可调（100-900）
+
+## 🔧 开发说明
+
+### 代码规范
+- 使用 TypeScript 严格模式
+- 遵循 ESLint 规则
+- 组件使用函数式组件 + Hooks
+
+### 状态管理
+- 使用 Zustand 进行全局状态管理
+- 使用 `persist` 中间件实现数据持久化
+- 数据存储在 IndexedDB 中
+
+### 样式方案
+- 使用 Tailwind CSS 进行样式编写
+- 全局字体大小统一为 14px
+- 响应式布局，支持侧边栏折叠
+
+## 📝 更新日志
+
+### 最新版本
+- ✅ 支持文字多行显示（换行符支持）
+- ✅ 优化贴纸库编辑功能，修复数据重新初始化问题
+- ✅ 内置 A4 5x5 模板支持自定义字段多行显示
+- ✅ 优化存储方案，使用 IndexedDB 避免存储限制
+- ✅ 完善抠图工具交互，支持平移和缩放
+- ✅ 添加元素大小控制手柄，支持锁定长宽比
+
+## 📄 许可证
+
+MIT License
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+---
+
+**注意**：本项目为本地应用，所有数据存储在浏览器本地，不会上传到服务器。请定期导出重要数据作为备份。

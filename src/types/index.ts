@@ -24,11 +24,13 @@ export interface LayerData {
   size: Size;
   rotation: number;
   zIndex: number;
+  lockAspectRatio?: boolean;
 }
 
 export interface StickerContent extends LayerData {
   content: string; // 贴纸图片URL
   clipPath?: string; // SVG路径
+  customData?: Record<string, string>;
   effects?: {
     shadow?: {
       color: string;
@@ -47,15 +49,23 @@ export interface TextContent extends LayerData {
   content: string;
   font: string;
   fontSize: number;
+  fontWeight: number;
   color: string;
   alignment: 'left' | 'center' | 'right';
   lineHeight: number;
+}
+
+export interface CustomFieldDef {
+  key: string;
+  label: string;
+  type: 'text';
 }
 
 export interface StickerLibrary {
   id: string;
   name: string;
   stickers: StickerContent[];
+  customFieldDefs?: CustomFieldDef[];
   createdAt: string;
   updatedAt: string;
 }
