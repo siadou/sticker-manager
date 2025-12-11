@@ -5,11 +5,11 @@ import { DeleteOutlined, FileAddOutlined, ExportOutlined } from '@ant-design/ico
 
 import useAppStore from '../store/useAppStore';
 import { BUILT_IN_TEMPLATES } from '../constants/builtInTemplates';
-import type { StickerContent, TextContent, CanvasData } from '../types';
+import type { StickerContent, TextContent } from '../types';
 
 const TemplateManager: React.FC = () => {
   const { templates, createTemplate, importTemplate, exportTemplate, deleteTemplate, stickerLibraries } = useAppStore();
-  const applyTemplate = useAppStore((state: { openCanvas: (canvas: CanvasData) => void }) => state.openCanvas);
+  const applyTemplate = useAppStore((state) => state.openCanvas);
 
   const [isCreateTemplateModalVisible, setIsCreateTemplateModalVisible] = useState(false);
   const [isSelectLibraryModalVisible, setIsSelectLibraryModalVisible] = useState(false);
@@ -32,7 +32,7 @@ const TemplateManager: React.FC = () => {
 
     // 默认创建一个500x500的空白模板
     const canvasSettings = { width: 500, height: 500, background: '#ffffff' };
-    const layers: any[] = [];
+    const layers: TextContent[] = [];
 
     createTemplate(name, canvasSettings, layers);
     setIsCreateTemplateModalVisible(false);
@@ -195,7 +195,7 @@ const TemplateManager: React.FC = () => {
         zIndex: layers.length,
         // 补充缺失属性
         lockAspectRatio: true
-      } as any; // 使用any绕过严格类型检查，或者完善TextContent类型定义
+      } as TextContent;
       layers.push(textLayer);
     });
 

@@ -24,6 +24,7 @@ const LayerPanel: React.FC = () => {
       content: '双击编辑文字',
       font: 'Arial, sans-serif',
       fontSize: 24,
+      fontWeight: 400,
       color: '#000000',
       alignment: 'left',
       lineHeight: 1.2,

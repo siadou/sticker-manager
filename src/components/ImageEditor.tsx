@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Button, Upload, Slider, message, Input, Select } from 'antd';
 import { UploadOutlined, ScissorOutlined, SaveOutlined } from '@ant-design/icons';
-import type { UploadFile } from 'antd';
 import useAppStore from '../store/useAppStore';
 import type { StickerContent } from '../types';
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAppStore from '../store/useAppStore';
-import { type LayerData, type StickerContent, type TextContent } from '../types';
+import { type LayerData, type TextContent } from '../types';
 
 const ElementPropertyPanel: React.FC = () => {
   const { canvasData, selectedLayerId, updateLayer } = useAppStore();

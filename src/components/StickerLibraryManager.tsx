@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Popconfirm, Tooltip } from 'antd';
 import type { FormProps } from 'antd';
-import { DeleteOutlined, DownOutlined, UpOutlined, EditOutlined, ExportOutlined, PlusOutlined, ImportOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined, EditOutlined, ExportOutlined, PlusOutlined, ImportOutlined } from '@ant-design/icons';
 
 import useAppStore from '../store/useAppStore';
 import type { StickerContent } from '../types';
 import StickerLibraryEditorModal from './StickerLibraryEditorModal';
 
 const StickerLibraryManager: React.FC = () => {
-  const { stickerLibraries, createStickerLibrary, importStickerLibrary, exportStickerLibrary, removeStickerFromLibrary, deleteStickerLibrary, addLayer } = useAppStore();
+  const { stickerLibraries, createStickerLibrary, importStickerLibrary, exportStickerLibrary, removeStickerFromLibrary, deleteStickerLibrary } = useAppStore();
   const [isCreateLibraryModalVisible, setIsCreateLibraryModalVisible] = useState(false);
   const [expandedLibraryId, setExpandedLibraryId] = useState<string | null>(null);
   const [editingLibraryId, setEditingLibraryId] = useState<string | null>(null);

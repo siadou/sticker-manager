@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { get, set, del } from 'idb-keyval';
-import type { CanvasData, LayerData, StickerLibrary, TemplateData, ToolType } from '../types';
+import type { CanvasData, LayerData, StickerLibrary, TemplateData, ToolType, StickerContent } from '../types';
 
 interface AppStore {
   // 画布数据
@@ -25,7 +25,7 @@ interface AppStore {
 
   // 画布操作
   createCanvas: (width: number, height: number, name?: string) => void;
-  openCanvas: (canvasId: string) => void;
+  openCanvas: (canvasData: CanvasData) => void;
   saveCanvas: (canvasData: CanvasData) => void;
   updateCanvasSettings: (settings: Partial<CanvasData['canvasSettings']>) => void;
 
@@ -384,14 +384,14 @@ const useAppStore = create<AppStore>()(
         }));
       },
       resetZoom: () => {
-        set((state) => ({
+        set({
           zoomLevel: 1,
-        }));
+        });
       },
       setZoomLevel: (level) => {
-        set((state) => ({
+        set({
           zoomLevel: Math.max(Math.min(level, 3), 0.1),
-        }));
+        });
       },
     }  ),
     {

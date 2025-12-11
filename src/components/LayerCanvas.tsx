@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import useAppStore from '../store/useAppStore';
 import { type LayerData, type StickerContent, type TextContent, type Size, type Position } from '../types';
 import { StickerLayer } from './layers/StickerLayer';

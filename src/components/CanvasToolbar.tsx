@@ -73,9 +73,8 @@ const CanvasToolbar: React.FC<CanvasToolbarProps> = ({ onOpenImageEditor }) => {
         reader.onload = (event) => {
           try {
             const canvasData = JSON.parse(event.target?.result as string);
-            // 这里需要调用store中的openCanvas方法
-            // 由于useAppStore中的openCanvas方法还没有实现，我们可以直接替换当前画布数据
-            useAppStore.setState({ canvasData });
+            const { openCanvas } = useAppStore.getState();
+            openCanvas(canvasData);
           } catch (error) {
             alert('导入失败：无效的JSON文件');
           }
